@@ -26,20 +26,20 @@ sub fixlink {
 
     # Convert site-relative path (i.e. relative do the document root) to
     # a doc-relative path (i.e. relative to the current file being processed).
+    # Sorta. Go up to the document root first.
     if ($path =~ m{^/}) {
-        $abs_path = $document_root . $path;
-        $path = File::Spec->abs2rel( $abs_path, $current_file_directory );
+        $path = File::Spec->abs2rel( $document_root, $current_file_directory ) . $path;
     }
 
     # Chop off trailing slash(es).
     $path =~ s{/+$}{};
 
-    # Append a .md file extension if there's no extension.
-    if ($path !~ /[.]\w+$/) {
+    # Append a .md file extension if there's no extension, unless something by that name exists.
+    if ($path !~ /[.]\w+$/ && ! -e "$current_file_directory/$path") {
         $path .= ".md";
     }
 
-    "${path}${anchor}"
+    return "${path}${anchor}"
 }
 
 
@@ -55,6 +55,7 @@ BEGIN {
     #    second capture group is `link` (no whitespace on either side)
     #    third capture group is whitespace plus `)`
     $markdown_link_re = qr/
+        (?<![!])  # ignore images (starts with '!')
         (
             \[
             [^]]+
