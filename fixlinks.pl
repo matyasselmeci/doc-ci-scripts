@@ -9,6 +9,7 @@ no strict;  # 🤠
 
 sub fixlink {
     $link = $2;
+    $current_file = $ARGV;
     $current_file_directory = dirname($ARGV);
 
     # full URL or email link -- ignore
@@ -31,12 +32,15 @@ sub fixlink {
         $path = File::Spec->abs2rel( $document_root, $current_file_directory ) . $path;
     }
 
-    # Chop off trailing slash(es).
-    $path =~ s{/+$}{};
+    # If this is not a literal path, link to a markdown file with that name.
+    if (! -e "$current_file_directory/$path") {
+        # Chop off trailing slash(es).
+        $path =~ s{/+$}{};
 
-    # Append a .md file extension if there's no extension, unless something by that name exists.
-    if ($path !~ /[.]\w+$/ && ! -e "$current_file_directory/$path") {
-        $path .= ".md";
+        # Append a .md file extension if there's no extension
+        if ($path !~ /[.]\w+$/) {
+            $path .= ".md";
+        }
     }
 
     return "${path}${anchor}"
