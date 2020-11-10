@@ -54,7 +54,8 @@ BEGIN {
     $document_root .= "/docs";
 
 
-    # Captures links e.g. `[text](link)` (the ] and ( may have space in between)
+    # Captures links e.g. `[text](link)`.
+    # There may be whitespace before or after the `(`, and before the `)`.
     #    first capture group is from `[` to `(` plus whitespace
     #    second capture group is `link` (no whitespace on either side)
     #    third capture group is whitespace plus `)`
