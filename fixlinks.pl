@@ -1,6 +1,16 @@
 #!/usr/bin/perl -p
 # -*- coding: utf-8 -*-
 
+# Usage:
+#
+#    fixlinks.pl < INFILE > OUTFILE
+#  or to do in-place substitution:
+#    perl -i.bak ./fixlinks.pl INFILE
+#
+# Example to run this recursively:
+#
+#    find . -type f -name \*.md -exec perl -i.bak ./fixlinks.pl {} +
+
 use 5.018;  # RHEL 7 e.g. moria
 use File::Spec;
 use File::Basename;
